@@ -3,14 +3,14 @@
 import "./globals.css";
 import { RecoilRoot } from "recoil";
 import { Lato } from "next/font/google";
-// import { Inter } from "next/font/google";
 
 import TopBar from "@/components/TopBar";
 import SideBar from "@/components/SideBar";
 
-const lato = Lato({ subsets: ["latin"], weight: ["100", "300", "400", "700", "900"] });
-
-// const inter = Inter({ subsets: ["latin"] });
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"],
+});
 
 export default function RootLayout({
   children,
@@ -21,7 +21,7 @@ export default function RootLayout({
     <RecoilRoot>
       <html lang="en">
         <body className={lato.className}>
-          <div className="relative">
+          <div className="relative lg:w-10/12 mx-auto">
             <TopBar />
             <SideBar />
             {children}

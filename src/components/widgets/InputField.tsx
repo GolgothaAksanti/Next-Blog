@@ -50,7 +50,7 @@ const InputField = ({
         placeholder={placeholder || title}
         onChange={onChange}
         onClick={onClick}
-        className={`border bg-gray-100 border-gray-300 text-gray-900 text-sm rounded-md placeholder:text-xs focus:ring-0 focus:outline-none w-full ${className}`}
+        className={`border bg-gray-200 border-gray-300 text-gray-900 text-sm rounded-md placeholder:text-xs focus:ring-0 focus:outline-none w-full ${className}`}
       />
     </div>
   );
