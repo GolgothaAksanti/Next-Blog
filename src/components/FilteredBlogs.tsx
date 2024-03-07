@@ -33,10 +33,10 @@ const FilteredBlogs = () => {
 
   return (
     <div className="w-10/12 mx-auto space-y-5 mt-5">
-      <div className="lg:flex items-center justify-between space-y-5 lg:space-y-0">
+      <div className="xl:flex items-center justify-between space-y-5 xl:space-y-0">
         <div
           ref={searchRef}
-          className={`flex px-4 col-span-4 py-0 w-full lg:w-1/4 items-center border bg-gray-100 rounded ${
+          className={`flex px-4 col-span-4 py-0 w-full xl:w-1/4 items-center border bg-gray-200 rounded ${
             searchActive ? " border-gray-300" : " "
           }`}
         >
@@ -56,7 +56,7 @@ const FilteredBlogs = () => {
                 title={cat.name}
                 className={`hover:bg-gray-100 rounded-md p-1 px-2 ${
                   activeCategory === cat.name
-                    ? " bg-gray-100 "
+                    ? " bg-gray-200 "
                     : " "
                 }`}
                 onClick={() => {
