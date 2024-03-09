@@ -1,14 +1,255 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model admins {
+  admin_id Int    @id @default(autoincrement())
+  fullname String @db.VarChar(255)
+  email    String @db.VarChar(255)
+  password String @db.VarChar(255)
+  salt     String @db.VarChar(255)
+  role     Int    @default(2)
+  added_by Int
+
+  @@index([added_by], map: "added_by_index")
+}
+
+model categories {
+  category_id Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+}
+
+model comments {
+  comment_id Int     @id @default(autoincrement())
+  message    String? @db.Text
+  fullname   String  @db.VarChar(255)
+  rating     Int
+  product_id Int
+  user_id    Int
+  createdAt  String  @db.VarChar(255)
+
+  @@index([product_id], map: "product_id_index")
+  @@index([user_id], map: "user_id_index")
+}
+
+model contactUs {
+  contact_us_id Int    @id @default(autoincrement())
+  fullname      String @db.VarChar(255)
+  email         String @db.VarChar(255)
+  phonenumber   String @db.VarChar(255)
+  created_at    String @db.VarChar(255)
+  message       String @db.Text
+  status        Int
+}
+
+model deliveries {
+  delivery_id Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  value       String @db.VarChar(255)
+  product_id  Int
+
+  @@index([product_id], map: "product_id_index")
+}
+
+model images {
+  image_id    Int     @id @default(autoincrement())
+  image_url   String  @db.VarChar(255)
+  product_id  Int
+  imagekit_id String? @db.VarChar(255)
+
+  @@index([product_id], map: "product_id_index")
+}
+
+model newsletter {
+  newsletter_id Int    @id @default(autoincrement())
+  email         String @db.VarChar(255)
+}
+
+model order_details {
+  order_details_id Int     @id @default(autoincrement())
+  price            Float
+  quantity         Int
+  created_at       String? @db.VarChar(255)
+  status           Int
+  product_id       Int
+  order_id         Int
+
+  @@index([order_id], map: "order_id_index")
+  @@index([product_id], map: "product_id_index")
+}
+
+model orders {
+  order_id   Int     @id @default(autoincrement())
+  full_price Float
+  created_at String? @db.VarChar(255)
+  status     Int
+  user_id    Int
+
+  @@index([user_id], map: "user_id_index")
+}
+
+model prices {
+  price_id    Int    @id @default(autoincrement())
+  price       Float
+  description String @db.Text
+  product_id  Int
+  currency    String @db.VarChar(255)
+
+  @@index([product_id], map: "product_id_index")
+}
+
+model products {
+  product_id      Int     @id @default(autoincrement())
+  name            String  @db.VarChar(255)
+  description     String  @db.Text
+  price           Float
+  quantity        Int
+  in_stock        Boolean
+  condition       String  @db.VarChar(255)
+  sub_category_id Int
+  currency        String? @default("FC") @db.VarChar(3)
+
+  @@index([sub_category_id], map: "sub_category_id_index")
+}
+
+model properties {
+  property_id Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  value       String @db.VarChar(255)
+  product_id  Int
+
+  @@index([product_id], map: "product_id_index")
+}
+
+model sub_categories {
+  sub_category_id Int    @id @default(autoincrement())
+  name            String @db.VarChar(255)
+  category_id     Int
+
+  @@index([category_id], map: "category_id_index")
+}
+
+model users {
+  user_id           Int     @id @default(autoincrement())
+  fullname          String  @db.VarChar(255)
+  email             String  @db.VarChar(255)
+  phonenumber       String  @db.VarChar(255)
+  created_at        String  @db.VarChar(255)
+  status            Int
+  salt              String? @db.VarChar(255)
+  password          String? @db.VarChar(255)
+  code              String? @db.VarChar(255)
+  is_email_verified Int?    @default(0)
+}
+
+model videos {
+  video_id    Int     @id @default(autoincrement())
+  video_url   String  @db.VarChar(255)
+  product_id  Int
+  imagekit_id String? @db.VarChar(255)
+
+  @@index([product_id], map: "product_id_index")
+}
+
+model authors {
+  author_id BigInt   @id @unique(map: "author_id") @default(autoincrement()) @db.UnsignedBigInt
+  fullname  String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  image     String?  @db.VarChar(255)
+  salt      String   @db.VarChar(255)
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+  image_id  String?  @db.VarChar(255)
+}
+
+model blog_comments {
+  blog_comments_id BigInt   @id @unique(map: "blog_comments_id") @default(autoincrement()) @db.UnsignedBigInt
+  author_id        Int
+  blog_id          Int
+  comment          String   @db.Text
+  status           Boolean  @default(true)
+  createdAt        DateTime @default(now()) @db.Timestamp(0)
+  updatedAt        DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([author_id], map: "author_id_index")
+  @@index([blog_id], map: "blog_id_index")
+}
+
+model blog_likes {
+  blog_like_id BigInt   @id @unique(map: "blog_like_id") @default(autoincrement()) @db.UnsignedBigInt
+  author_id    Int
+  blog_id      Int
+  createdAt    DateTime @default(now()) @db.Timestamp(0)
+  updatedAt    DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([author_id], map: "author_id_index")
+  @@index([blog_id], map: "blog_id_index")
+}
+
+model blogs {
+  blog_id     BigInt   @id @unique(map: "blog_id") @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  category    String   @db.Text
+  image       String   @db.Text
+  tags        String   @db.Text
+  views       Int      @default(0)
+  share       Int      @default(0)
+  status      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime @default(now()) @db.Timestamp(0)
+  author_id   Int
+  image_id    String?  @db.VarChar(255)
+
+  @@index([author_id], map: "author_id_index")
+}
+
+model comment_likes {
+  comment_like_id BigInt   @id @unique(map: "comment_like_id") @default(autoincrement()) @db.UnsignedBigInt
+  author_id       Int
+  comment_id      Int
+  createdAt       DateTime @default(now()) @db.Timestamp(0)
+  updatedAt       DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([author_id], map: "author_id_index")
+  @@index([comment_id], map: "comment_id_index")
+}
+
+model e7272_57ab_52cb_a139_aca87f440129_20240308184857_vrepl {
+  author_id BigInt   @id @unique(map: "author_id") @default(autoincrement()) @db.UnsignedBigInt
+  fullname  String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  image     String   @db.Text
+  salt      String   @db.VarChar(255)
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamp(0)
+  updatedAt DateTime @default(now()) @db.Timestamp(0)
+
+  @@map("_210e7272_57ab_52cb_a139_aca87f440129_20240308184857_vrepl")
+}
+
+model a74a96_396b_5285_b245_f9c28beaba5d_20240308184902_vrepl {
+  blog_id     BigInt   @id @unique(map: "blog_id") @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  category    String   @db.Text
+  image       String   @db.Text
+  tags        String   @db.Text
+  views       Int      @default(0)
+  share       Int      @default(0)
+  status      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @db.Timestamp(0)
+  updatedAt   DateTime @default(now()) @db.Timestamp(0)
+  author_id   Int
+
+  @@index([author_id], map: "author_id_index")
+  @@map("_77a74a96_396b_5285_b245_f9c28beaba5d_20240308184902_vrepl")
 }

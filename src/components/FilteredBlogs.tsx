@@ -44,7 +44,7 @@ const FilteredBlogs = () => {
           <InputField
             onClick={() => setSearchActive(true)}
             placeholder="Search for any blog article..."
-            className="border-none py-2 w-full"
+            className="border-none py-2 w-full bg-gray-200"
           />
         </div>
 
@@ -54,7 +54,7 @@ const FilteredBlogs = () => {
               <Button
                 key={cat.id}
                 title={cat.name}
-                className={`hover:bg-gray-100 rounded-md p-1 px-2 ${
+                className={`hover:bg-gray-100 rounded-xl p-1 px-2 ${
                   activeCategory === cat.name
                     ? " bg-gray-200 "
                     : " "

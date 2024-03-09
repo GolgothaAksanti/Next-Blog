@@ -1,0 +1,30 @@
+export const HTTP_CODES = Object.freeze({
+  INTERNAL_SERVER_ERROR_CODE: 500,
+  NOT_FOUND_CODE: 404,
+  SUCCESS_CODE: 200,
+  CREATED_CODE: 201,
+  BAD_REQUEST_CODE: 400,
+  METHOD_NOT_ALLOWED_CODE: 405,
+  PAYMENT_REQUIRED_CODE: 402,
+  FORBIDDEN_CODE: 403,
+  UNAUTHORIZED_CODE: 401,
+});
+
+export const HTTP_MESSAGES = Object.freeze({
+  INTERNAL_SERVER_ERROR_MSG: "internal server error",
+  NOT_FOUND_MSG: "resource not found",
+  SUCCESS_MSG: "request was successfull",
+  CREATED_MSG: "created successfully",
+  BAD_REQUEST_MSG: "request was invalid",
+  METHOD_NOT_ALLOWED_MSG: "wrong method implementation",
+  PAYMENT_REQUIRED_MSG: "payment required",
+  FORBIDDEN_MSG: "forbidden request",
+  UNAUTHORIZED_MSG: "Unauthorized",
+  AUTH_FAILURE_MSG: "Invalid Credentials",
+  NO_ENTRY_MSG: "Entry do not exist",
+  INVALID_TOKEN_MSG: "Token is not valid",
+  TOKEN_EXPIRED_MSG: "Token is expired",
+  NO_DATA_MSG: "no data available",
+  MISSING_TOKEN_MSG: "access token was not provided",
+  ALREADY_EXIST: "already exists",
+});

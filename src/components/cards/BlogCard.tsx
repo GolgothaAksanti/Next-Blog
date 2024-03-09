@@ -8,10 +8,10 @@ import SeeMore from "../widgets/SeeMore";
 import Link from "next/link";
 import { IBlog } from "@/libs/interfaces/blog.interfaces";
 
-const BlogCard = ({ title, image, createdAt, blog }: IBlog) => {
+const BlogCard = ({ title, image, createdAt, blog, _id }: IBlog) => {
   return (
     <Link
-      href={`/blogs/${title?.replace(/[^a-zA-Z0-9]/g, "-")?.toLowerCase()}`}
+      href={`/blogs/${_id}/${title?.replace(/[^a-zA-Z0-9]/g, "-")?.toLowerCase()}`}
       className="w-full space-y-1 lg:space-y-2"
     >
       <div className="w-full h-72 lg:rounded-xl shadow-main">
