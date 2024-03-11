@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authors } from "@prisma/client";
 
 import { db } from "@/libs/utils/db.config";
 import Token from "@/libs/utils/token";
@@ -22,7 +21,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     const validate = signinAuthorValidator.parse(body);
 
-    const author: authors | null = await db.authors.findFirst({
+    const author = await db.authors.findFirst({
       where: { email: body.email },
     });
 
