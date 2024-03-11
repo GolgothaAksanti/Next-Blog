@@ -10,18 +10,18 @@ export const responseHandler = (
 ): NextResponse => {
   return NextResponse.json(
     { status: HTTP_CODE, message: HTTP_MESSAGE, data },
-    { status: HTTP_CODE, statusText: HTTP_MESSAGE }
+    { status: HTTP_CODE}
   );
 };
 
 export const tryCatchErrorHandler = (err: any) => {
-  let error: string;
+  let error:string | IZodError[] = [];
   let code = 500;
 
   if (err instanceof z.ZodError) {
     error = err.issues.map((issue) => ({
       message: `${issue.path.join(".")} ${issue.message}`,
-    }))[0].message;
+    }));
 
     code = HTTP_CODES.BAD_REQUEST_CODE;
   } else {
@@ -29,12 +29,17 @@ export const tryCatchErrorHandler = (err: any) => {
   }
 
   if (code !== 500) {
-    return responseHandler(HTTP_CODES.BAD_REQUEST_CODE, error);
+    return responseHandler(HTTP_CODES.BAD_REQUEST_CODE,  Array.isArray(error) ? error.map(obj => obj.message).join(', ') : "");
   }
 
-  console.log(err);
+  // console.log(err);
   return responseHandler(
     HTTP_CODES.INTERNAL_SERVER_ERROR_CODE,
     HTTP_MESSAGES.INTERNAL_SERVER_ERROR_MSG
   );
 };
+
+
+interface IZodError{
+  message: string
+}

@@ -1,16 +1,17 @@
+import { NextRequest, NextResponse } from "next/server";
+
+import ImageKit from "@/libs/plugin/imagekit";
+import { generateFileName } from "@/libs/utils/files";
 import {
   IUploadImage,
   ImageType,
 } from "@/libs/interfaces/upload.image.interface";
-import ImageKit from "@/libs/plugin/imagekit";
-import { generateFileName } from "@/libs/utils/files";
 import { HTTP_CODES, HTTP_MESSAGES } from "@/libs/utils/http.handler";
 import {
   responseHandler,
   tryCatchErrorHandler,
 } from "@/libs/utils/response.handler";
 import { uploadImageValidator } from "@/libs/validators/upload.file.validator";
-import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   try {
