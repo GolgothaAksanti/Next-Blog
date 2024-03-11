@@ -15,6 +15,7 @@ const MyImage: React.FC<MyImageProps> = ({ alt, className, ...props }) => {
         layout="fill"
         objectFit="cover"
         className="rounded-md"
+        loading="lazy"
       />
     </div>
   );

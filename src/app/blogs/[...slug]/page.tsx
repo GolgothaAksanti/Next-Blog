@@ -37,7 +37,7 @@ const Page: React.FC<Props> = ({ params: { slug } }): JSX.Element => {
 
   return (
     <div className="w-10/12 space-y-5 mx-auto h-full pb-20 pt-10">
-      <div className="w-full mx-auto lg:w-3/4 xl:w-1/2 space-y-8">
+      <div className="w-full mx-auto lg:w-3/4 xl:w-3/4 space-y-8">
         <div className="space-y-">
           <p className="text-sm">{blog.title}</p>
           <p className="text-2xl xl:text-3xl font-bold">{blog.title}</p>
@@ -59,7 +59,7 @@ const Page: React.FC<Props> = ({ params: { slug } }): JSX.Element => {
         </div>
       </div>
       <div className="pt-10">
-        <p className="text-2xl lg:text-4xl font-">Recommanded</p>
+        <p className="text-xl lg:text-2xl font-medium">Recommanded</p>
       </div>
       <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {blogs
@@ -67,7 +67,7 @@ const Page: React.FC<Props> = ({ params: { slug } }): JSX.Element => {
           .sort(() => 0.5 - Math.random())
           .slice(0, 4)
           .map((blog) => {
-            return <BlogCard key={blog._id} {...blog} />;
+            return <BlogCard key={blog._id} {...blog} isMany />;
           })}
       </div>
     </div>

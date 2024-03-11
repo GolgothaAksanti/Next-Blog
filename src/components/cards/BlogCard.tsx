@@ -8,13 +8,17 @@ import SeeMore from "../widgets/SeeMore";
 import Link from "next/link";
 import { IBlog } from "@/libs/interfaces/blog.interfaces";
 
-const BlogCard = ({ title, image, createdAt, blog, _id }: IBlog) => {
+interface IProp extends IBlog {
+  isMany?: boolean
+}
+
+const BlogCard = ({ title, image, createdAt, blog, _id, isMany = false }: IProp) => {
   return (
     <Link
       href={`/blogs/${_id}/${title?.replace(/[^a-zA-Z0-9]/g, "-")?.toLowerCase()}`}
       className="w-full space-y-1 lg:space-y-2"
     >
-      <div className="w-full h-72 lg:rounded-xl shadow-main">
+      <div className={`w-full lg:rounded-xl shadow-main ${isMany ? " h-52 ": " h-72 "}`}>
         <MyImage
           src={image}
           alt="title"

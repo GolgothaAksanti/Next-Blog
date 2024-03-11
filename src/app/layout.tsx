@@ -8,6 +8,8 @@ import TopBar from "@/components/TopBar";
 import SideBar from "@/components/SideBar";
 import LoginModal from "@/components/modals/LoginModal";
 import RegisterModal from "@/components/modals/RegisterModal";
+import ResetPasswordModal from "@/components/modals/ResetPasswordModal";
+import UpdatePasswordModal from "@/components/modals/UpdatePasswordModal";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -22,14 +24,15 @@ export default function RootLayout({
   return (
     <RecoilRoot>
       <html lang="en">
-        <body className={lato.className}>
-        <LoginModal />
-        <RegisterModal />
+        <body className={`${lato.className} scrollbar`}>
+          <LoginModal />
+          <RegisterModal />
+          <ResetPasswordModal />
+          <UpdatePasswordModal />
           {/* <SearchModal />
           <SignOutModal />
-          <ResetPasswordModal />
-          <UpdatePasswordModal /> */}
-          <div className="relative lg:w-10/12 mx-auto">
+          */}
+          <div className="relative lg:w-10/12 mx-auto max-w-[1440px]">
             <TopBar />
             <SideBar />
             {children}

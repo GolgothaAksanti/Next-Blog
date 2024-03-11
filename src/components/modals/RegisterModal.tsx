@@ -16,12 +16,8 @@ import Button from "../widgets/Button";
 import InputField from "../widgets/InputField";
 import { FileInput } from "../widgets/FileInput";
 import { ISetFile } from "@/libs/interfaces/upload.image.interface";
+import Input from "../widgets/Input";
 
-//   enum ImageProperties {
-//      MAX_IMAGES = 4,
-//      MAX_IMAGE_SIZE_MB = 2,
-//      ALLOWED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png"],
-//   }
 
 const RegisterModal = (): JSX.Element => {
   const [showModal, setShowModal] = useRecoilState<IAuthentication>(
@@ -48,6 +44,7 @@ const RegisterModal = (): JSX.Element => {
     document.body.classList.remove("h-screen");
     document.body.classList.remove("max-h-screen");
     document.body.setAttribute("style", "");
+    setSrc(null)
   };
 
   useEffect(() => {
@@ -144,13 +141,13 @@ const RegisterModal = (): JSX.Element => {
         <div className="space-y-2 h-full">
           <div className="pb-8">
             <p className="text-2xl text-center font-bold">
-              <span className="text-base font-normal">Inscription</span>
-              <br />
               Next Blog
+              <br />
+              <span className="text-base font-normal">Inscription</span>
             </p>
           </div>
-          <div className="space-y-5">
-            <div className="">
+          <div className="space-y-4">
+            <div className="flex items-center justify-center">
               <FileInput
                 setFile={setImage}
                 setSrc={setSrc}
@@ -163,39 +160,37 @@ const RegisterModal = (): JSX.Element => {
               />
             </div>
             <div className="border-b">
-              <InputField
-                autoFocus={true}
+              <Input
                 onChange={(e) => setFullname(e.target.value)}
-                placeholder="Full Name"
+                placeholder="FULL NAME"
                 value={fullname}
-                className="border-none autofill:bg-white bg-white px-0"
+                className="border-none py-2 bg-white px-0"
               />
             </div>
             <div className="border-b">
-              <InputField
-                autoFocus={true}
+              <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="EMAIL ADDRESS"
-                className="border-none autofill:bg-white bg-white px-0"
+                className="border-none py-2 bg-white px-0"
               />
             </div>
             <div className="border-b">
-              <InputField
-                type="password"
+              <Input
+                inputType="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="PASSWORD"
-                className="border-none autofill:bg-white bg-white px-0"
+                className="border-none py-2 bg-white px-0"
               />
             </div>
             <div className="border-b">
-              <InputField
-                type="password"
+              <Input
+                inputType="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="CONFIRM PASSWORD"
-                className="border-none autofill:bg-white bg-white px-0"
+                className="border-none py-2 bg-white px-0"
               />
             </div>
             <div className="w-full pt-5 pb-8 space-y-4">

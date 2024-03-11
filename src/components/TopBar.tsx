@@ -62,27 +62,21 @@ const TopBar = () => {
         </div>
         <div className="hidden lg:flex justify-end gap-x-4 items-center">
           <Button
-          onClick={onLogin}
+            onClick={onLogin}
             className="bg-black text-gray-200 rounded-full px-3 py-2 hover:bg-gray-800 transition-colors"
             title="Sign in"
           />
           <Button
-          onClick={onRegister}
+            onClick={onRegister}
             className="border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-100 transition-colors"
             title="Sign up"
           />
         </div>
-        <div className="lg:hidden">
+        <div onClick={() => setShowSidebar(!showSideBar)} className="lg:hidden">
           {showSideBar ? (
-            <RxCross1
-              onClick={() => setShowSidebar(!showSideBar)}
-              className="text-xl"
-            />
+            <RxCross1 className="text-xl" />
           ) : (
-            <GiHamburgerMenu
-              onClick={() => setShowSidebar(!showSideBar)}
-              className="text-xl"
-            />
+            <GiHamburgerMenu className="text-xl" />
           )}
         </div>
       </div>

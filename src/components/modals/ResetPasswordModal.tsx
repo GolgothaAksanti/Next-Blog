@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import React, { useEffect, useState } from "react";
 
@@ -8,27 +7,20 @@ import { FiLoader } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 
 import Button from "../widgets/Button";
-// import { Service } from "@/libs/service";
-// import { ROUTES } from "@/libs/endpoints";
-import InputField from "../widgets/InputField";
+import { IAuthenticationDefault } from "@/libs/constants/authentication.constants";
 import {
   AuthenticationModalState,
-  AuthenticationState,
+  ResetPasswordTokenState,
 } from "@/libs/store/authenticationStore";
-import { IAuthenticationDefault } from "@/libs/constants/authentication.constants";
-import { IAuthentication } from "@/libs/interfaces/authernication.interface";
-import Input from "../widgets/Input";
+import InputField from "../widgets/InputField";
 
-const LoginModal = (): JSX.Element => {
-  const [showModal, setShowModal] = useRecoilState<IAuthentication>(
-    AuthenticationModalState
-  );
+const ResetPasswordModal = (): JSX.Element => {
+  const [showModal, setShowModal] = useRecoilState(AuthenticationModalState);
+  const setResetToken = useSetRecoilState(ResetPasswordTokenState);
+
   const [email, setEmail] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<string | null>(null);
-
-  const setAuthenticationState = useSetRecoilState(AuthenticationState);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const onClose = (): void => {
     setShowModal(IAuthenticationDefault);
@@ -45,7 +37,7 @@ const LoginModal = (): JSX.Element => {
       if (loading) setLoading(false);
     }, 3000);
     return () => clearTimeout(timeOut);
-  }, [loading, errors]);
+  }, [loading, errors, showModal]);
 
   //   const onSumbit = async (
   //     e: React.FormEvent<HTMLFormElement>
@@ -60,25 +52,19 @@ const LoginModal = (): JSX.Element => {
   //       ) {
   //         setErrors("Adresse e-mail invalide");
   //         return;
-  //       } else if (!password || password === "") {
-  //         setErrors("Mot de passe invalide");
-  //         return;
   //       } else {
   //         setLoading(true);
 
-  //         const response = await Service.post(ROUTES.SIGNIN, {
+  //         const response = await Service.post(ROUTES.RESET_PASSWORD, {
   //           email,
-  //           password,
   //         });
 
   //         setLoading(false);
 
   //         if (response?.status === 200) {
   //           setEmail("");
-  //           setPassword("");
-  //           setAuthenticationState(true);
-  //           localStorage.setItem("token", response?.data?.token);
-  //           onClose();
+  //           setResetToken(response?.data?.token);
+  //           setShowModal({ updatePassword: true, resetPassword: false });
   //         } else {
   //           setErrors(response?.message);
   //         }
@@ -89,13 +75,13 @@ const LoginModal = (): JSX.Element => {
   //     }
   //   };
 
-  if (!showModal.login) return <></>;
+  if (!showModal.resetPassword) return <></>;
 
   return (
     <div className="inset-0 flex items-center justify-center px-5 py-10 lg:py-16 w-full h-full max-h-full absolute z-[999999] bg-black/70">
       <form
         onSubmit={() => {}}
-        className="relative flex flex-col space-y-5 max-h-full min-h-[400px] w-full md:w-[500px] rounded-xl text-xs bg-white py-8 px-5 lg:px-16 shadow-2xl"
+        className="relative flex flex-col space-y-5 max-h-full min-h-[300px] w-full md:w-[400px] rounded-md text-xs bg-white py-8 px-5 lg:px-10 shadow-2xl"
       >
         <div className="flex flex-row space-x-2 items-end justify-end pb-2">
           <Button
@@ -107,41 +93,25 @@ const LoginModal = (): JSX.Element => {
         </div>
         <div className="space-y-2 h-full overflow-y-auto search-scrollbar">
           <div className="pb-8">
-            <p className="text-2xl text-center font-bold flex flex-col gap-y-2">
-              <span className="">Welcome Back,</span>
-              <span className="text-xs font-light">
-                Please, enter your details to sign in
-              </span>
+            <p className="text-2xl text-center font-bold">
+              Next Blog
+              <br />
+              <span className="text-base font-normal">Reset Your password</span>
             </p>
           </div>
           <div className="space-y-5">
-          <div className="border-b">
-              <Input
-                value={email}
+            <div className="border-b">
+              <InputField
+                autoFocus={true}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="EMAIL ADDRESS"
-                className="border-none py-2 bg-white px-0"
-              />
-            </div>
-            <div className="border-b">
-              <Input
-                inputType="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="PASSWORD"
-                className="border-none py-2 bg-white px-0"
+                className="border-none bg-transparent px-0"
               />
             </div>
 
-            <div className="w-full flex justify-end text-center text-sm">
-              <Button
-                onClick={() => setShowModal({ resetPassword: true })}
-                className="underline hover:text-gray-600 font-light"
-              >
-                Forget your password?
-              </Button>
-            </div>
             <div className="w-full pt-5 pb-8 space-y-4">
+              
+
               {errors ? (
                 <div className="w-full rounded-md px-4 py-2 flex justify-center items-center bg-red-700/50 text-white capitalize">
                   {errors}
@@ -150,26 +120,33 @@ const LoginModal = (): JSX.Element => {
 
               <Button
                 type="submit"
-                className="flex justify-center items-center bg-black hover:bg-black/80 w-full px-4 py-3 rounded-md text-white uppercase text-sm"
+                className="flex justify-center items-center bg-black hover:bg-black/80 w-full px-4 py-3 rounded-full text-white uppercase text-sm"
               >
                 {loading ? (
                   <div className="px-8 py-[3px]">
                     <FiLoader className="animate-spin" />
                   </div>
                 ) : (
-                  "Sign in"
+                  "Reset Password"
                 )}
               </Button>
 
-              <div className="w-full text-center text-sm font-light">
-                Don{"’"}t have an account?{" "}
-                <Button
-                  onClick={() => setShowModal({ register: true })}
-                  className="underline hover:text-gray-600"
-                >
-                  Register
-                </Button>
+              <div className="flex flex-col space-y-2 pb-4">
+                <div className="w-full text-center text-sm">
+                  Already have an account?{" "}
+                  <Button
+                    onClick={() => setShowModal({ login: true })}
+                    className="underline hover:text-secondary"
+                  >
+                    Log in
+                  </Button>
+                </div>
               </div>
+            </div>
+
+            <div className="text-center text-sm">
+              An email containing the password reset code will be sent to your
+              email address if it is found in our system.
             </div>
           </div>
         </div>
@@ -178,4 +155,4 @@ const LoginModal = (): JSX.Element => {
   );
 };
 
-export default LoginModal;
+export default ResetPasswordModal;
