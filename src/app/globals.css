@@ -36,10 +36,29 @@
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-
 .no-scrollbars {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+  cursor: pointer;
+  display: block;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #c1c1cd;
+  /* border-radius: 10px; */
+  cursor: pointer;
+  transition: background-color ease-in-out 0.3s;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+  background: gray;
+}

@@ -7,6 +7,7 @@ import InputField from "./widgets/InputField";
 import { blogs, categories } from "@/libs/constants/blog.constants";
 import Button from "./widgets/Button";
 import BlogCard from "./cards/BlogCard";
+import Input from "./widgets/Input";
 
 const FilteredBlogs = () => {
   const [searchActive, setSearchActive] = useState<boolean>(false);
@@ -36,25 +37,26 @@ const FilteredBlogs = () => {
       <div className="xl:flex items-center justify-between space-y-5 xl:space-y-0">
         <div
           ref={searchRef}
-          className={`flex px-4 col-span-4 py-0 w-full xl:w-1/4 items-center border bg-gray-200 rounded ${
+          className={`flex px-4 col-span-4 gap-x-2 justify-stretch py-0 w-full xl:w-1/4 items-center border bg-gray-200 rounded ${
             searchActive ? " border-gray-300" : " "
           }`}
         >
-          <MdSearch className="text-lg text-gray-500 mr-2" />
-          <InputField
+          <MdSearch className="text-lg text-gray-500" />
+          <Input
             onClick={() => setSearchActive(true)}
+            onChange={() => {}}
             placeholder="Search for any blog article..."
-            className="border-none py-2 w-full"
+            className="border-none py-2 bg-gray-200 focus:outline-none"
           />
         </div>
 
-        <div className="flex items-center justify-end"> 
+        <div className="flex items-center justify-end "> 
           <div className="w-full py-1 overflow-x-scroll no-scrollbars whitespace-nowrap scroll-smooth mx-auto flex gap-2 items-center justify-start xl:gap-4">
             {categories.map((cat) => (
               <Button
                 key={cat.id}
                 title={cat.name}
-                className={`hover:bg-gray-100 rounded-md p-1 px-2 ${
+                className={`hover:bg-gray-100 rounded p-1 px-2 ${
                   activeCategory === cat.name
                     ? " bg-gray-200 "
                     : " "

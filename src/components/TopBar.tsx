@@ -4,14 +4,41 @@ import React from "react";
 import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { navs } from "@/libs/constants/topbar.constants";
 import Button from "./widgets/Button";
 import { SidebarStore } from "@/libs/store/sidebarStore";
+import { AuthenticationModalState } from "@/libs/store/authenticationStore";
+import { IAuthentication } from "@/libs/interfaces/authernication.interface";
 
 const TopBar = () => {
   const [showSideBar, setShowSidebar] = useRecoilState<boolean>(SidebarStore);
+  const setShowLoginModal = useSetRecoilState<IAuthentication>(
+    AuthenticationModalState
+  );
+
+  const onLogin = (): void => {
+    setShowLoginModal({ login: true, register: false });
+    document.body.classList.add("overflow-hidden");
+    document.body.classList.add("h-screen");
+    document.body.classList.add("max-h-screen");
+    window.document?.body.setAttribute(
+      "style",
+      "position: fixed; top: 0; left: 0; right: 0;"
+    );
+  };
+
+  const onRegister = (): void => {
+    setShowLoginModal({ login: false, register: true });
+    document.body.classList.add("overflow-hidden");
+    document.body.classList.add("h-screen");
+    document.body.classList.add("max-h-screen");
+    window.document?.body.setAttribute(
+      "style",
+      "position: fixed; top: 0; left: 0; right: 0;"
+    );
+  };
 
   return (
     <div className="w-full text-xs py-5 ">
@@ -35,25 +62,21 @@ const TopBar = () => {
         </div>
         <div className="hidden lg:flex justify-end gap-x-4 items-center">
           <Button
+            onClick={onLogin}
             className="bg-black text-gray-200 rounded-full px-3 py-2 hover:bg-gray-800 transition-colors"
-            title="Explore features"
+            title="Sign in"
           />
           <Button
+            onClick={onRegister}
             className="border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-100 transition-colors"
-            title="Join us"
+            title="Sign up"
           />
         </div>
-        <div className="lg:hidden">
+        <div onClick={() => setShowSidebar(!showSideBar)} className="lg:hidden">
           {showSideBar ? (
-            <RxCross1
-              onClick={() => setShowSidebar(!showSideBar)}
-              className="text-xl"
-            />
+            <RxCross1 className="text-xl" />
           ) : (
-            <GiHamburgerMenu
-              onClick={() => setShowSidebar(!showSideBar)}
-              className="text-xl"
-            />
+            <GiHamburgerMenu className="text-xl" />
           )}
         </div>
       </div>

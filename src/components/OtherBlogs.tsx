@@ -15,7 +15,7 @@ const OtherBlogs = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {blogs.slice(2).map((blog) => (
-            <BlogCard key={blog._id} {...blog} />
+            <BlogCard key={blog._id} {...blog} isMany/>
         ))}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { ChangeEvent } from "react";
 
 type Props = {
+  onClick?: () => void,
   className?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -20,11 +21,12 @@ const Input = ({
   disabled,
   id,
   checked,
+  onClick = () => {}
 }: Props) => {
   return (
     <label>
       <input
-        className={className}
+        className={`w-full outline-none ${className}`}
         placeholder={placeholder}
         type={inputType}
         value={value}
@@ -32,6 +34,7 @@ const Input = ({
         onChange={onChange}
         id={id}
         checked={checked}
+        onClick={onClick}
       />
     </label>
   );
