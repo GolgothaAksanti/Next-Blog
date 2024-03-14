@@ -4,14 +4,26 @@ import React, { useState } from "react";
 import Link from "next/link";
 
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { AccountSidebarStore } from "@/libs/store/sidebarStore";
 import AccountMenuSideBar from "./AccountMenuSideBar";
 import { accountNavs } from "@/libs/constants/topbar.constants";
+import {
+  AuthenticationState,
+  UserStore,
+} from "@/libs/store/authenticationStore";
+import { IAuthor } from "@/libs/interfaces/authernication.interface";
+import MyImage from "./widgets/MyImage";
+import { isValidImageUrl } from "@/libs/utils/verify.image.url";
+import { profileImagePlaceholder } from "@/libs/constants/authentication.constants";
 
 const AccountMenu = () => {
   const [openAccountMenu, setOpenAccountMenu] =
     useRecoilState<boolean>(AccountSidebarStore);
+
+  const auth = useRecoilValue<boolean>(AuthenticationState);
+  const user = useRecoilValue<IAuthor | null>(UserStore);
+
   return (
     <div className="bg-slate-50 rounded-xl max-h-[80vh] flex flex-col gap-y-10 justify-start items-center col-span-2 py-4">
       <div className="w-10/12 flex items-center justify-between">
@@ -19,10 +31,20 @@ const AccountMenu = () => {
           href={accountNavs[0].route}
           className="flex w-2/3 shadow-sm lg:w-full items-center justify-around p-2 rounded-xl bg-white gap-2"
         >
-          <span className="w-6 h-6 rounded-full bg-gray-500"></span>
-          <p className="text-base font-medium text-gray-700">Golgotha</p>
+          <div className="w-6 h-6 rounded-full bg-gray-500">
+            <MyImage
+              src={
+                user && isValidImageUrl(user?.image)
+                  ? user?.image
+                  : profileImagePlaceholder
+              }
+              className="overflow-hidden rounded-full"
+              alt="profile-image"
+            />
+          </div>
+          <p className="text-base font-medium text-gray-700">{user && user.fullname}</p>
         </Link>
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
         <div
           onClick={() => setOpenAccountMenu(!openAccountMenu)}
           className="lg:hidden shadow-sm bg-white p-2 rounded-xl px-5 text-xl"
@@ -42,7 +64,9 @@ const AccountMenu = () => {
               {name}
             </Link>
           ))}
-          <p className="p-1 text-black w-full text-left font-medium hover:underline">Logout</p>
+          <p className="p-1 text-black w-full text-left font-medium hover:underline">
+            Logout
+          </p>
         </div>
         <div className="w-10/12 py-2 flex items-center justify-center bg-white rounded-xl">
           <Link

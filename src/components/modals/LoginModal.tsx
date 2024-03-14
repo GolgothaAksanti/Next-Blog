@@ -1,23 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { SetterOrUpdater, useRecoilState, useSetRecoilState } from "recoil";
 import React, { useEffect, useState } from "react";
 
 import { FiLoader } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 
 import Button from "../widgets/Button";
-// import { Service } from "@/libs/service";
-// import { ROUTES } from "@/libs/endpoints";
-import InputField from "../widgets/InputField";
 import {
   AuthenticationModalState,
   AuthenticationState,
+  UserStore,
 } from "@/libs/store/authenticationStore";
 import { IAuthenticationDefault } from "@/libs/constants/authentication.constants";
-import { IAuthentication } from "@/libs/interfaces/authernication.interface";
+import {
+  IAuthentication,
+  IAuthor,
+} from "@/libs/interfaces/authernication.interface";
 import Input from "../widgets/Input";
+import { signin } from "@/libs/service/auth.service";
 
 const LoginModal = (): JSX.Element => {
   const [showModal, setShowModal] = useRecoilState<IAuthentication>(
@@ -27,6 +28,7 @@ const LoginModal = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [errors, setErrors] = useState<string | null>(null);
+  const setUser: SetterOrUpdater<IAuthor | null> = useSetRecoilState(UserStore);
 
   const setAuthenticationState = useSetRecoilState(AuthenticationState);
 
@@ -47,54 +49,55 @@ const LoginModal = (): JSX.Element => {
     return () => clearTimeout(timeOut);
   }, [loading, errors]);
 
-  //   const onSumbit = async (
-  //     e: React.FormEvent<HTMLFormElement>
-  //   ): Promise<void> => {
-  //     try {
-  //       e.preventDefault();
+  const onSumbit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    try {
+      e.preventDefault();
 
-  //       if (
-  //         !email ||
-  //         email === "" ||
-  //         !email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)
-  //       ) {
-  //         setErrors("Adresse e-mail invalide");
-  //         return;
-  //       } else if (!password || password === "") {
-  //         setErrors("Mot de passe invalide");
-  //         return;
-  //       } else {
-  //         setLoading(true);
+      if (
+        !email ||
+        email === "" ||
+        !email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)
+      ) {
+        setErrors("Invalid email address");
+        return;
+      } else if (!password || password === "") {
+        setErrors("Invalid Credentials");
+        return;
+      } else {
+        setLoading(true);
 
-  //         const response = await Service.post(ROUTES.SIGNIN, {
-  //           email,
-  //           password,
-  //         });
+        const response = await signin({
+          email,
+          password,
+        });
 
-  //         setLoading(false);
+        setLoading(false);
 
-  //         if (response?.status === 200) {
-  //           setEmail("");
-  //           setPassword("");
-  //           setAuthenticationState(true);
-  //           localStorage.setItem("token", response?.data?.token);
-  //           onClose();
-  //         } else {
-  //           setErrors(response?.message);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       setErrors("Une erreur est survenue, veuillez réessayer plus tard");
-  //       setLoading(false);
-  //     }
-  //   };
+        if (response?.status === 200) {
+          setEmail("");
+          setPassword("");
+          setAuthenticationState(true);
+          localStorage.setItem("token", response?.data?.token);
+          setUser(response?.data?.data);
+          onClose();
+        } else {
+          setErrors(response?.message);
+        }
+      }
+    } catch (error) {
+      setErrors("Internal server error");
+      setLoading(false);
+    }
+  };
 
   if (!showModal.login) return <></>;
 
   return (
     <div className="inset-0 flex items-center justify-center px-5 py-10 lg:py-16 w-full h-full max-h-full absolute z-[999999] bg-black/70">
       <form
-        onSubmit={() => {}}
+        onSubmit={onSumbit}
         className="relative flex flex-col space-y-5 max-h-full min-h-[400px] w-full md:w-[500px] rounded-xl text-xs bg-white py-8 px-5 lg:px-16 shadow-2xl"
       >
         <div className="flex flex-row space-x-2 items-end justify-end pb-2">
@@ -115,7 +118,7 @@ const LoginModal = (): JSX.Element => {
             </p>
           </div>
           <div className="space-y-5">
-          <div className="border-b">
+            <div className="border-b">
               <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
