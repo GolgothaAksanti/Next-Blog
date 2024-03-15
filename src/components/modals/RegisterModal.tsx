@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { SetterOrUpdater, useRecoilState, useSetRecoilState } from "recoil";
 import React, { useEffect, useState } from "react";
 
 import { FiLoader } from "react-icons/fi";
@@ -9,15 +9,18 @@ import { AiOutlineClose } from "react-icons/ai";
 import {
   AuthenticationModalState,
   AuthenticationState,
+  UserStore,
 } from "@/libs/store/authenticationStore";
-import { IAuthentication } from "@/libs/interfaces/authernication.interface";
+import {
+  IAuthentication,
+  IAuthor,
+} from "@/libs/interfaces/authernication.interface";
 import { IAuthenticationDefault } from "@/libs/constants/authentication.constants";
 import Button from "../widgets/Button";
-import InputField from "../widgets/InputField";
 import { FileInput } from "../widgets/FileInput";
 import { ISetFile } from "@/libs/interfaces/upload.image.interface";
 import Input from "../widgets/Input";
-
+import { signup } from "@/libs/service/auth.service";
 
 const RegisterModal = (): JSX.Element => {
   const [showModal, setShowModal] = useRecoilState<IAuthentication>(
@@ -33,6 +36,7 @@ const RegisterModal = (): JSX.Element => {
   const [imageLoading, setImageLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<string | null>(null);
   const setAuthenticationState = useSetRecoilState(AuthenticationState);
+  const setUser: SetterOrUpdater<IAuthor | null> = useSetRecoilState(UserStore);
 
   const MAX_IMAGES = 1;
   const MAX_IMAGE_SIZE_MB = 2;
@@ -44,7 +48,7 @@ const RegisterModal = (): JSX.Element => {
     document.body.classList.remove("h-screen");
     document.body.classList.remove("max-h-screen");
     document.body.setAttribute("style", "");
-    setSrc(null)
+    setSrc(null);
   };
 
   useEffect(() => {
@@ -56,78 +60,76 @@ const RegisterModal = (): JSX.Element => {
     return () => clearTimeout(timeOut);
   }, [loading, errors]);
 
-  //   const onSumbit = async (
-  //     e: React.FormEvent<HTMLFormElement>
-  //   ): Promise<void> => {
-  //     try {
-  //       e.preventDefault();
+  const onSumbit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    try {
+      e.preventDefault();
 
-  //       if (!isRecaptchaVerified) {
-  //         setErrors("Recaptcha invalide");
-  //         setLoading(false);
-  //         return;
-  //       } else if (!fullname || fullname === "" || fullname.length < 9) {
-  //         setErrors("Nom complet invalide");
-  //         return;
-  //       } else if (
-  //         !email ||
-  //         email === "" ||
-  //         !email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)
-  //       ) {
-  //         setErrors("Adresse e-mail invalide");
-  //         return;
-  //       } else if (!phonenumber) {
-  //         setErrors("Numéro de téléphone invalide");
-  //         return;
-  //       } else if (password.length < 8) {
-  //         setErrors("La taille minimale du mot de passe est de 8 caractères");
-  //         return;
-  //       } else if (!password || password === "") {
-  //         setErrors("Mot de passe invalide");
-  //         return;
-  //       } else if (!confirmPassword || confirmPassword === "") {
-  //         setErrors("Confirmation du mot de passe invalide");
-  //         return;
-  //       } else if (password !== confirmPassword) {
-  //         setErrors("Vos mots de passe ne correspondent pas");
-  //         return;
-  //       } else {
-  //         setLoading(true);
+      if (!fullname || fullname === "" || fullname.length < 9) {
+        setErrors("The name is not complete");
+        return;
+      } else if (
+        !email ||
+        email === "" ||
+        !email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)
+      ) {
+        setErrors("Invalid email address");
+        return;
+      } else if (!image) {
+        setErrors("Please upload a profile image");
+        return;
+      } else if (password.length < 8) {
+        setErrors("The password supposed to have 8 characters or plus");
+        return;
+      } else if (!password || password === "") {
+        setErrors("Invalid Password");
+        return;
+      } else if (!confirmPassword || confirmPassword === "") {
+        setErrors("The Password Confirmation is not valid");
+        return;
+      } else if (password !== confirmPassword) {
+        setErrors("The password doesn't match");
+        return;
+      } else {
+        setLoading(true);
 
-  //         const response = await Service.post(ROUTES.SIGNUP, {
-  //           fullname,
-  //           password,
-  //           email,
-  //           phonenumber: String(phonenumber).slice(1),
-  //         });
+        const response = await signup({
+          fullname,
+          password,
+          email,
+          image: image.image_url,
+          image_id: image.image_id,
+        });
 
-  //         setLoading(false);
+        setLoading(false);
 
-  //         if (response?.status === 201) {
-  //           setEmail("");
-  //           setPhoneNumber(null);
-  //           setPassword("");
-  //           setFullname("");
-  //           setConfirmPassword("");
-  //           setAuthenticationState(true);
-  //           localStorage.setItem("token", response?.data?.token);
-  //           onClose();
-  //         } else {
-  //           setErrors(response?.message);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       setErrors("Une erreur est survenue, veuillez réessayer plus tard");
-  //       setLoading(false);
-  //     }
-  //   };
+        if (response?.status === 201) {
+          setEmail("");
+          setImage(null);
+          setPassword("");
+          setFullname("");
+          setConfirmPassword("");
+          setAuthenticationState(true);
+          localStorage.setItem("token", response?.data?.token);
+          setUser(response?.data?.data);
+          onClose();
+        } else {
+          setErrors(response?.message);
+        }
+      }
+    } catch (error) {
+      setErrors("Enternal server error");
+      setLoading(false);
+    }
+  };
 
   if (!showModal.register) return <></>;
 
   return (
     <div className="inset-0 flex items-center justify-center px-5 py-10 lg:py-16 w-full h-full max-h-full absolute z-[999999] bg-black/70">
       <form
-        onSubmit={() => {}}
+        onSubmit={onSumbit}
         className="relative flex flex-col space-y-5 max-h-full min-h-[400px] w-full md:w-[400px] lg:w-[500px] rounded-xl text-xs bg-white py-8 px-5 lg:px-16 shadow-2xl overflow-y-auto"
       >
         <div className="flex flex-row space-x-2 items-end justify-end pb-2">

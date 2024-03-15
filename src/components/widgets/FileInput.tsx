@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { getFileBase64, isValidFile } from "@/libs/utils/files";
 import MyImage from "./MyImage";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/libs/interfaces/upload.image.interface";
 import { uploadImage } from "@/libs/service/upload.image.service";
 import { FiLoader } from "react-icons/fi";
+import { profileImagePlaceholder } from "@/libs/constants/authentication.constants";
 
 export interface FileInputProps {
   max_files: number;
@@ -85,7 +86,7 @@ export const FileInput: React.FC<FileInputProps> = ({
           src={
             src
               ? src
-              : "https://ik.imagekit.io/2ujnunod7moo/profile-placeholder_ALCfN7w0T.jpg?updatedAt=1709953134969"
+              : profileImagePlaceholder
           }
         />
       </div>

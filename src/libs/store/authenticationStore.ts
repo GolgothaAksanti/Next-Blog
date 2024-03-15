@@ -1,6 +1,6 @@
 import { RecoilState, atom } from "recoil";
 import { IAuthenticationDefault } from "../constants/authentication.constants";
-import { IAuthentication } from "../interfaces/authernication.interface";
+import { IAuthentication, IAuthor } from "../interfaces/authernication.interface";
 
 export const AuthenticationModalState: RecoilState<IAuthentication> =
   atom<IAuthentication>({
@@ -19,3 +19,8 @@ export const ResetPasswordTokenState: RecoilState<string | null> = atom<
   key: "resetPasswordTokenState",
   default: null,
 });
+
+export const UserStore: RecoilState<IAuthor | null> = atom<IAuthor | null>({
+  key: "user-store",
+  default: null
+})

@@ -4,19 +4,31 @@ import React from "react";
 import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCross1 } from "react-icons/rx";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 
 import { navs } from "@/libs/constants/topbar.constants";
 import Button from "./widgets/Button";
 import { SidebarStore } from "@/libs/store/sidebarStore";
-import { AuthenticationModalState } from "@/libs/store/authenticationStore";
-import { IAuthentication } from "@/libs/interfaces/authernication.interface";
+import {
+  AuthenticationModalState,
+  AuthenticationState,
+  UserStore,
+} from "@/libs/store/authenticationStore";
+import {
+  IAuthentication,
+  IAuthor,
+} from "@/libs/interfaces/authernication.interface";
+import MyImage from "./widgets/MyImage";
+import { profileImagePlaceholder } from "@/libs/constants/authentication.constants";
+import { isValidImageUrl } from "@/libs/utils/verify.image.url";
 
 const TopBar = () => {
   const [showSideBar, setShowSidebar] = useRecoilState<boolean>(SidebarStore);
   const setShowLoginModal = useSetRecoilState<IAuthentication>(
     AuthenticationModalState
   );
+  const auth = useRecoilValue<boolean>(AuthenticationState);
+  const user = useRecoilValue<IAuthor | null>(UserStore);
 
   const onLogin = (): void => {
     setShowLoginModal({ login: true, register: false });
@@ -60,24 +72,59 @@ const TopBar = () => {
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex justify-end gap-x-4 items-center">
-          <Button
-            onClick={onLogin}
-            className="bg-black text-gray-200 rounded-full px-3 py-2 hover:bg-gray-800 transition-colors"
-            title="Sign in"
-          />
-          <Button
-            onClick={onRegister}
-            className="border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-100 transition-colors"
-            title="Sign up"
-          />
-        </div>
-        <div onClick={() => setShowSidebar(!showSideBar)} className="lg:hidden">
-          {showSideBar ? (
-            <RxCross1 className="text-xl" />
-          ) : (
-            <GiHamburgerMenu className="text-xl" />
+        {!auth && !user ? (
+          <div className="hidden lg:flex justify-end gap-x-4 items-center">
+            <Button
+              onClick={onLogin}
+              className="bg-black text-gray-200 rounded-full px-3 py-2 hover:bg-gray-800 transition-colors"
+              title="Sign in"
+            />
+            <Button
+              onClick={onRegister}
+              className="border border-gray-300 rounded-full px-3 py-2 hover:bg-gray-100 transition-colors"
+              title="Sign up"
+            />
+          </div>
+        ) : (
+          <div className="hidden lg:flex justify-end gap-x-4 items-center">
+            <Link
+              href="/account/" className="w-10 h-10 rounded-full bg-slate-500">
+            <MyImage
+                src={
+                 user && isValidImageUrl(user?.image)
+                    ? user?.image
+                    : profileImagePlaceholder
+                }
+                className="overflow-hidden rounded-full"
+                alt="profile-image"
+              />
+            </Link>
+          </div>
+        )}
+        <div className="flex lg:hidden justify-end gap-x-4 items-center">
+          {auth && user && (
+            <Link
+              href="/account/"
+              className="w-7 h-7 cursor-pointer rounded-full bg-slate-500"
+            >
+              <MyImage
+                src={
+                  isValidImageUrl(user?.image)
+                    ? user?.image
+                    : profileImagePlaceholder
+                }
+                className="overflow-hidden rounded-full"
+                alt="profile-image"
+              />
+            </Link>
           )}
+          <div onClick={() => setShowSidebar(!showSideBar)} className="">
+            {showSideBar ? (
+              <RxCross1 className="text-xl" />
+            ) : (
+              <GiHamburgerMenu className="text-xl" />
+            )}
+          </div>
         </div>
       </div>
     </div>
